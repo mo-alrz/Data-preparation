@@ -113,11 +113,11 @@ print(a, '\n', a.shape)
 
 b = a.reshape(-1)
 print(b)
-b = a.reshape(-1,1)
+b = a.reshape(-1, 1)
 print(b)
-b = a.reshape(3,2,-1)
+b = a.reshape(3, 2, -1)
 print(b)
-c = b.reshape(3,-1)
+c = b.reshape(3, -1)
 print(c)
 
 # Return 1D-array -> .ravel
@@ -129,10 +129,86 @@ e = c.flatten()
 print(e)
 
 # Transposition -> Switch rows and columns with .T/.transpose()
-a = np.arange(6).reshape(2,3)
+a = np.arange(6).reshape(2, 3)
 print(a)
 b = a.T
 c = a.transpose()
 print(b)
 print(c)
 
+# Operations
+# Addition :
+print([1, 1, 1] + [1, 2, 3])
+print(np.array([1, 1, 1]) + np.array([1, 2, 3]))
+
+# To concatenate :
+print(np.concatenate([np.array([1, 1, 1]), np.array([1, 2, 3])]))
+
+# Appending an element to a numpy array doesn't update original array:
+a = np.array([1, 2, 3])
+np.append(a, 4)
+print(a)
+
+# Addition and multiplication of an element to a NumPy is elementwise addition
+a = np.array([1, 1, 1])
+print(a + 3)
+print(a.dot(a))
+
+# Should be of same length else it will raise error
+a = np.arange(12).reshape(3, 4)
+b = np.array([10 ** i for i in range(4)])
+print(a + b)
+
+a = np.arange(12).reshape(4, 3)
+b = np.array([10 ** i for i in range(4)]).reshape(-1, 1)
+print(a + b)
+
+# Logical operators
+a = np.array([1, 0, 0]).astype('bool')
+b = np.array([1, 1, 0]).astype('bool')
+print(a)
+print(b)
+
+# NOT AND OR XOR (We cannot use 'not,and')
+print(~ a)
+print(a & b)
+print(a | b)
+print(a ^ b)
+
+# == < > <= >=
+a = np.arange(6).reshape(2, 3)
+b = np.array([[0, 1, 4], [3, 3, 5]])
+print(a == b)
+print(a < b)
+print(a > b)
+
+# .all() -> Shows if all elements are the same
+# .any() -> Shows if any elements are the same
+print((a == b).all())
+print((a == b).any())
+
+# For element-wise comparisons the arrays should be of the same shape
+# if possible, NumPy will try to force elements into a common type
+a = np.ones(4).astype('bool')
+b = np.ones(4).astype('float')
+c = np.ones(4).astype('int')
+
+print(a == b)
+print(b == c)
+print(a == c)
+
+a = np.full(4, fill_value=2).astype("int")
+b = np.ones(4).astype("float")
+c = np.ones(4).astype("bool")
+
+print("a == b:", a == b)
+print("a == c:", a == c)
+print("b == c:", b == c)
+
+a = np.array(["True"]*4, dtype="object")
+b = np.array(["True"]*4, dtype="<U4")
+c = np.ones(4).astype("bool")
+
+print(a == b)
+print(a == c)
+print(b == c)
