@@ -211,4 +211,47 @@ c = np.ones(4).astype("bool")
 
 print(a == b)
 print(a == c)
-print(b == c)
+# print(b == c)
+
+# Checking level-equality
+a = np.arange(6).reshape(2,3)
+b = np.arange(8).reshape(2,4)
+
+print(np.array_equal(a,b))
+
+# Aggregations
+# .sum() .mean() .min() .max() .argmin() .argmax()
+
+a = np.arange(10,15)
+print(a.sum())
+print(a.min())
+print(a.max())
+print(a.mean())
+print(a.argmin())
+print(a.argmax())
+
+# Boolean indexing
+a = np.array([1,2,3])
+b = np.array([True,True,False])
+
+print(a[b])
+print(a[a <= 2])
+
+# Booleans must be in same shape with the array, the result will be 1D array
+a = np.arange(6).reshape(2, 3)
+b = np.array([[True, True, False],
+              [True, True, False]])
+
+print(a[a < 5])
+print(a[b])
+
+# Empty values
+print(np.array([None,np.NAN]))
+
+print(np.NaN < 3)
+print(np.NaN >= 3)
+
+a = np.array([1, np.NaN, 1, 3])
+print(a[a < 2])
+print(a[a >= 2])
+print(a[~(a < 2)])
