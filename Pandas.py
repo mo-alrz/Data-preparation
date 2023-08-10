@@ -134,3 +134,25 @@ print(d2[(d2 == 3) | (d2 == 'two')])
 print((d2 == 3).all())
 print((d2 == 3).all(axis=1))
 print(d2[(d2 == 3).all(axis=1)])
+
+# Descriptive
+print(df2.describe())
+
+# If there are numerical columns then only those columns' statistics are included by default --
+# the include parameter can be used to produce all:
+print(df2.describe(include="all"))
+print(df["year"].describe())
+
+# .min(), .max(), .mean(), .median(), .std(), .count()
+print(df2.count())
+print(df2.count(axis=1))
+# print(df2.mean()) & ...
+
+# Unique values and value counts .unique() .nunique() .value_counts()
+colname = "paradigm"
+print(colname, "has", df2[colname].nunique(), "values:")
+print(df2[colname].unique())
+print(df2[colname].value_counts())
+
+# Types
+print(df2.info())
