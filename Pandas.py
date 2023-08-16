@@ -155,4 +155,59 @@ print(df2[colname].unique())
 print(df2[colname].value_counts())
 
 # Types
-print(df2.info())
+print(df2.info())  # This method is not available for series
+print(df2.dtypes)  # Gives the types of the columns
+print(df2['year'].dtype)  # For series
+
+# DataFrame and Series manipulation
+# Making a copy
+d = pd.DataFrame(np.arange(6).reshape(2, 3))
+d2 = d.copy()
+d2.loc[0, 0] = 100
+print(d)
+print(d2)
+
+# DataFrame Concatenation
+# By default, as always, axis=0 is assumed = concatenation of rows:
+d = pd.DataFrame(np.arange(15).reshape(3, 5))
+d2 = pd.DataFrame(np.arange(100, 110).reshape(2, 5), index=[1, 2])
+d3 = pd.concat([d, d2])
+print(d3)
+
+# To concatenate along columns
+d3 = pd.concat([d, d2], axis=1)
+print(d3)
+
+# Elementwise operations
+d = pd.DataFrame(np.ones(6).reshape(2, 3))
+print(d + 1)
+d.iloc[0, 1:] = -2
+print(d)
+print(d.abs())
+
+# Aggregation/Reduction methods and mapping values
+d = pd.DataFrame(np.arange(15).reshape(3, 5))
+print(d.sum(1))  # Axis = 1, sum columns = one value per row
+print(d.mean())  # Axis = 0, function apply to rows
+print(d.mean().mean())
+
+s = pd.Series([1, 1, 10, 3, 3])
+print(s.unique(), s.nunique())
+
+# MAP
+# Series -> .map()
+# DataFrames -> .applymap() to apply a function to each cell
+#               .apply() -> axis = 0 apply a function to each column
+#                           axis = 1 apply a function to each row
+
+s = pd.Series(['one', 'two', 'three', 'go'])
+s2 = s.map(lambda x: x[:2])
+print(s2)
+
+d = pd.DataFrame(np.arange(15).reshape(5, 3), columns=["col1", "col2", "col3"])
+d2 = d.apply("sum",axis=0)
+print(d2)
+
+# .dt. and .str.
+s3 = s.str.cat(sep= '+')
+print(s3)
