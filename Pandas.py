@@ -205,9 +205,66 @@ s2 = s.map(lambda x: x[:2])
 print(s2)
 
 d = pd.DataFrame(np.arange(15).reshape(5, 3), columns=["col1", "col2", "col3"])
-d2 = d.apply("sum",axis=0)
+d2 = d.apply("sum", axis=0)
 print(d2)
 
 # .dt. and .str.
-s3 = s.str.cat(sep= '+')
+s3 = s.str.cat(sep='+')
 print(s3)
+
+# Convert the index of a series into a column of a dataframe
+mylist = list('abcedfghijklmnopqrstuvwxyz')
+myarr = np.arange(26)
+mydict = dict(zip(mylist, myarr))
+ser = pd.Series(mydict)
+df = ser.to_frame().reset_index()
+print(df.head())
+
+# Combine many series to form a dataframe
+ser1 = pd.Series(list('abcedfghijklmnopqrstuvwxyz'))
+ser2 = pd.Series(np.arange(26))
+# solution 1
+df1 = pd.concat([ser1, ser2], axis=1)
+# solution 2
+df2 = pd.DataFrame({'col1': ser1, 'col2': ser2})
+
+# Assign name to the series index
+ser = pd.Series(list('abcedfghijklmnopqrstuvwxyz'))
+ser.name = 'Alphabets'
+print(ser.head())
+
+# Get the items of series A not present in series B
+ser1 = pd.Series([1, 2, 3, 4, 5])
+ser2 = pd.Series([4, 5, 6, 7, 8])
+not_in_a = ser1[~ser1.isin(ser2)]
+print(not_in_a)
+
+# Get the items not common to both series A and series B
+ser1 = pd.Series([1, 2, 3, 4, 5])
+ser2 = pd.Series([4, 5, 6, 7, 8])
+ser_u = pd.Series(np.union1d(ser1, ser2))
+ser_i = pd.Series(np.intersect1d(ser1, ser2))
+print(ser_u[~ser_u.isin(ser_i)])
+
+# Get the minimum, 25th percentile, median, 75th, and max of a numeric series
+state = np.random.RandomState(100)
+ser = pd.Series(np.random.normal(10, 5, 25))
+ans = np.percentile(ser, q=[i * 25 for i in range(5)])
+print(ans)
+
+# Keep only top 2 most frequent values as it is and replace everything else as ‘Other’
+np.random.RandomState(100)
+ser = pd.Series(np.random.randint(1, 5, [12]))
+most_frq = ser[~ser.isin(ser.value_counts().index[:2])] = 'other'
+print(ser)
+
+# Bin a numeric series to 10 groups of equal size
+ser = pd.Series(np.random.random(20))
+new_ser = pd.qcut(ser, q=[0, .10, .20, .3, .4, .5, .6, .7, .8, .9, 1],
+        labels=['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th']).head()
+print(new_ser)
+
+# convert a numpy array to a dataframe of given shape
+ser = pd.Series(np.random.randint(1, 10, 35))
+df = pd.DataFrame(ser.values.reshape(7,5))
+print(df)

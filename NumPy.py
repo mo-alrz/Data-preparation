@@ -75,6 +75,13 @@ arr2 = np.random.uniform(size=5)
 arr3 = np.random.uniform(low=3, high=5, size=5)
 arr4 = np.random.uniform(low=3, high=5, size=(2, 3))
 
+# .normal = Draw random samples from a normal (Gaussian) distribution.
+a = np.random.normal(10, 5, 25)
+
+# creates a seeded random number generator object using NumPy. This object allows you to generate random numbers in
+# a controlled and reproducible manner.
+np.random.RandomState(100)
+
 # print only n decimal places in python numpy array -> .set_printoptions()
 rand_arr = np.random.random([5,3])
 np.set_printoptions(precision=3)
