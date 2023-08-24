@@ -58,9 +58,27 @@ print(np.random.randint(10))
 print(np.random.randint(10, size=(2, 3)))
 print(np.random.randint(10, 100, size=4))
 
+# .random = Return random floats in the half-open interval [0.0, 1.0). Alias for random_sample to ease forward-porting
+# to the new random API.
+rand_arr = np.random.random()
+print(rand_arr)
+rand_arr = np.random.random([5,3])
+print(rand_arr)
+
 # .permutation = random permutation of numbers.
 print(np.random.permutation(10))
 print(np.random.permutation(["one", "two", "three", "four", "five"]))
+
+# .uniform = random float number wit a capability to select max and min
+arr1 = np.random.uniform()
+arr2 = np.random.uniform(size=5)
+arr3 = np.random.uniform(low=3, high=5, size=5)
+arr4 = np.random.uniform(low=3, high=5, size=(2, 3))
+
+# print only n decimal places in python numpy array -> .set_printoptions()
+rand_arr = np.random.random([5,3])
+np.set_printoptions(precision=3)
+print(rand_arr)
 
 # np.ones, np.zeros,np.full
 print(np.ones(4))
@@ -72,6 +90,67 @@ print(np.zeros((2, 4)))
 print(np.zeros(4, dtype=bool))
 
 print(np.full(4, 'rabbit'))
+
+# .where()
+arr = np.arange(10)
+out = np.where(arr % 2 == 1, -1, arr)
+print(arr)
+rint(out)
+
+# Get all items between 5 and 10 from a
+a = np.array([2, 6, 1, 9, 10, 3, 27])
+# 1
+index = np.where((a >= 5) & (a <= 10))
+# 2
+index = np.where(np.logical_and(a >= 5, a <= 10))
+# 3
+index = a[(a >= 5) & (a <= 10)]
+
+# make a python function that handles scalars to work on numpy arrays
+a = np.array([5, 7, 9, 8, 6, 4, 5])
+b = np.array([6, 3, 4, 8, 9, 7, 1])
+
+
+def maxx(x, y):
+    if x >= y:
+        return x
+    else:
+        return y
+
+
+pair_max = np.vectorize(maxx, otypes=[float])
+print(pair_max(a, b))
+
+# .repeat()
+a = np.repeat(1, 10)
+print(a)
+
+# Swap two columns/rows
+arr = np.arange(9).reshape(3, 3)
+
+# rows 1 and 2:
+b = arr[[1, 0, 2], :]
+
+# columns 1 and 2:
+b = arr[:, [1, 0, 2]]
+
+# Reverse rows and columns
+arr = np.arange(9).reshape(3, 3)
+
+# rows
+a = arr[::-1]
+
+# columns
+b = arr[:, ::-1]
+
+# Create a 2D array containing random floats between 5 and 10
+rand_int = np.random.randint(low=5, high=10, size=(5, 3))
+rand_float = np.random.random((5, 3))
+c = rand_int + rand_float
+print(c)
+
+rand_arr = np.random.uniform(5, 10, size=(5, 3))
+print(rand_arr)
 
 # Data types in NumPy arrays:
 # A numpy array is homogenous (contains elements of the same type)
@@ -149,6 +228,49 @@ a = np.array([1, 2, 3])
 np.append(a, 4)
 print(a)
 
+# Stack two array vertically and horizontally:
+a = np.arange(10).reshape(2, -1)
+b = np.repeat(1, 10).reshape(2, -1)
+
+# Vertically ->
+c = np.concatenate([a, b], axis=0)
+d = np.vstack([a, b])
+e = np.r_[a, b]
+print(c)
+print(d)
+print(e)
+
+# Horizontally ->
+c = np.concatenate([a, b], axis=0)
+d = np.hstack([a, b])
+e = np.c_[a, b]
+print(c)
+print(d)
+print(e)
+
+# .tile()
+a = np.array([1, 2, 3])
+b = np.tile(a, 3)
+print(b)
+
+# Intersection
+a = np.array([1, 2, 3, 2, 3, 4, 3, 4, 5, 6])
+b = np.array([7, 2, 10, 2, 7, 4, 9, 4, 9, 8])
+c = np.intersect1d(a, b)
+print(c)
+
+# How to remove from one array those items that exist in another
+a = np.array([1, 2, 3, 4, 5])
+b = np.array([5, 6, 7, 8, 9])
+c = np.setdiff1d(a, b)
+print(c)
+
+# How to get the positions where elements of two arrays match?
+a = np.array([1, 2, 3, 2, 3, 4, 3, 4, 5, 6])
+b = np.array([7, 2, 10, 2, 7, 4, 9, 4, 9, 8])
+c = np.where(a == b)
+print(c)
+
 # Addition and multiplication of an element to a NumPy is elementwise addition
 a = np.array([1, 1, 1])
 print(a + 3)
@@ -205,8 +327,8 @@ print("a == b:", a == b)
 print("a == c:", a == c)
 print("b == c:", b == c)
 
-a = np.array(["True"]*4, dtype="object")
-b = np.array(["True"]*4, dtype="<U4")
+a = np.array(["True"] * 4, dtype="object")
+b = np.array(["True"] * 4, dtype="<U4")
 c = np.ones(4).astype("bool")
 
 print(a == b)
@@ -214,15 +336,15 @@ print(a == c)
 # print(b == c)
 
 # Checking level-equality
-a = np.arange(6).reshape(2,3)
-b = np.arange(8).reshape(2,4)
+a = np.arange(6).reshape(2, 3)
+b = np.arange(8).reshape(2, 4)
 
-print(np.array_equal(a,b))
+print(np.array_equal(a, b))
 
 # Aggregations
 # .sum() .mean() .min() .max() .argmin() .argmax()
 
-a = np.arange(10,15)
+a = np.arange(10, 15)
 print(a.sum())
 print(a.min())
 print(a.max())
@@ -231,8 +353,8 @@ print(a.argmin())
 print(a.argmax())
 
 # Boolean indexing
-a = np.array([1,2,3])
-b = np.array([True,True,False])
+a = np.array([1, 2, 3])
+b = np.array([True, True, False])
 
 print(a[b])
 print(a[a <= 2])
@@ -246,7 +368,7 @@ print(a[a < 5])
 print(a[b])
 
 # Empty values
-print(np.array([None,np.NAN]))
+print(np.array([None, np.NAN]))
 
 print(np.NaN < 3)
 print(np.NaN >= 3)
