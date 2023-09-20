@@ -145,7 +145,6 @@ for search_pattern in ["\d", "\d\d", "\dm", "\s\w", "\s\W", r"\\A"]:
     print("The matches:")
     print(matches_found)
 
-
 # Word boundaries
 p = "class"
 for text_to_search in ["In today's class", "we learn about classified things."]:
@@ -181,6 +180,119 @@ for text_to_search in ["In today's class", "we learn about classified things."]:
 text_to_search = """Lor3m
 1psum"""
 p = "."
-print(re.findall(p,text_to_search))
+print(re.findall(p, text_to_search))
 
 # Controlling number of occurrences
+# The asterisk (Kleene star) allows for the preceding character or group to occur any number of times, incl. zero:
+text_to_search = "Lor321m 1psum"
+p = r"\d*"
+print(re.findall(p, text_to_search))
+
+# To exclude zero occurrences:
+text_to_search = "Lor321m 1psum"
+p = r"\d+"
+print(re.findall(p, text_to_search))
+
+# If you want only 0 or 1 occurrences:
+text_to_search = "Lor321m 1psum"
+p = r"\d?"
+print(re.findall(p, text_to_search))
+
+# This is equivalent to {0,1} = at least 0, at most 1 occurrences:
+text_to_search = "Lor321m 1psum"
+p = r"\d{0,1}"
+print(re.findall(p, text_to_search))
+
+# If you want to find exactly 2 occurrences:
+text_to_search = "Lor321m 1psum"
+p = r"\d{2}"
+print(re.findall(p, text_to_search))
+
+# Disjunctions ("OR"): fine-tuning sets of characters to search for
+# Often the predefined sets of characters are not enough,and you need to finetune the characters you want to search for.
+# For that, you can use
+#     [...] for a list of characters
+#     | for two characters or groups
+#     - for a range of characters (within [])
+
+text_to_search = "This is a date: 21-12-03"
+p = r"[\d\-]+"
+print(re.findall(p, text_to_search))
+
+# To find strings of smaller-case letters only (in the range between a-z, inclusive!):
+text_to_search = "This iz a date: 21-12-03"
+p = r"[a-z]+"
+print(re.findall(p, text_to_search))
+
+# To find strings of characters that are neither smaller-case letters, nor space: use caret after opening square
+# bracket to negate the set of characters searched for:
+text_to_search = "This iz a date: 21-12-03"
+p = r"[^a-z ]+"
+re.findall(p, text_to_search)
+
+# To find all integers or hyphens
+text_to_search = "This is a date: 21-12-03"
+p = r"\d|\-"
+print(re.findall(p, text_to_search))
+
+# Use | for longer string, as well:
+text_to_search = "Lisp, C++ and Python are all programming languages."
+p = r"Python|Lisp"
+print(re.findall(p, text_to_search))
+
+# The ambiguity of the caret:
+# Beware special metacharacters, which can sometimes --- in [...] --- behave as non-special characters. Beware
+# especially the caret ^ which can be ambiguous!
+#     outside of [...]: match beginning of string/line
+text_to_search = "^This is a^caret."
+p = r"^\w"
+print(re.findall(p, text_to_search))
+
+text_to_search = "This is a^caret."
+p = r"^\w"
+print(re.findall(p, text_to_search))
+
+#     inside of [^...] as first character: functions as negation ([^...] matches any character not inside it)
+text_to_search = "^This is a^caret."
+p = r"[^\w]"
+print(re.findall(p, text_to_search))
+
+#     inside of [...^] when NOT first character: matches carets!
+text_to_search = "^This is a^caret."
+p = r"[\w^]"
+print(re.findall(p, text_to_search))
+
+# Ambiguity of metacharacters"
+# inside [], most metacharacters function as non-meta characters
+text_to_search = r"(Th)|is$ is a\lot*of+me-ta?char{}act^ers."
+p = r"[ *+?(){}.^|$]"
+print(re.findall(p, text_to_search))
+
+# But \ and of course [] remain special and have to be escaped:
+text_to_search = r"This\is something[] different."
+p = r"[\ ]"
+print(re.findall(p, text_to_search))
+
+text_to_search = r"This\is something[] different."
+p = r"[\\ \[\]]"
+print(re.findall(p, text_to_search))
+
+# The hyphen - functions as a normal character if it is initial or final:
+text_to_search = r"Beware the hy-phen."
+p = r"[-a]"
+print(re.findall(p, text_to_search))
+
+text_to_search = r"Beware the hy-phen."
+p = r"[a-]"
+print(re.findall(p, text_to_search))
+
+# But functions as a metacharacter in between others:
+text_to_search = r"Beware the hy-phen."
+p = r"[a-h]"
+print(re.findall(p, text_to_search))
+
+# Your safest bet is to always escape special characters, even if it is superfluous:
+text_to_search = r"(Th)|i-s$ is a\lot*of+me-ta?c[h]ar{}act^ers."
+p = r"[ \*\+\?\(\)\{\}\.\^\|\$\[\]\-]"
+print(re.findall(p, text_to_search))
+
