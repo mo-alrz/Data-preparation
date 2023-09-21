@@ -21,7 +21,7 @@ val2 = reduce(reduce_function, map(lambda x: int(x), ints))
 print(val2)
 
 # RegEx functions:
-#   match -> Returns a Match object if there is a match at the beginning of the string
+#   match -> Returns a match object if there is a match at the beginning of the string
 text_to_search = "Lor3m 1psum"
 search_pattern = "\d"
 result = re.match(search_pattern, text_to_search)
@@ -39,7 +39,7 @@ print(methods)
 # To get back the matched string -> .group()
 print(result.group())
 
-#   search -> Returns a Match object if there is a match anywhere in the string and finds the first matching string
+#   search -> Returns a match object if there is a match anywhere in the string and finds the first matching string
 text_to_search = "Lor3m 1psum"
 search_pattern = "\d"
 result = re.search(search_pattern, text_to_search)
@@ -71,7 +71,7 @@ search_pattern = "\d"
 result = re.split(search_pattern, text_to_search)
 print(result)
 
-# pands .str. methods do allow regular experessions, very useful.
+# pands .str. methods do allow regular expressions, very useful.
 s = pd.Series(["Lor3m", "And 1p5s\dum"])
 s1 = s.str.split(r"\d")
 print(s1)
@@ -129,8 +129,8 @@ print('a\\nb')
 # You will generally want to use raw string notation for your regexes, as well to keep things readable!
 
 text_to_search = r"""Lor345m 1psum
-dolor sit amet, 
-consectetur adipiscing 
+dolor sit amet,
+consectetur adipiscing
 elit.\Aliquam vel odio
  volutpat, - tempor odio
  nec, fermentum magna?
@@ -227,8 +227,8 @@ print(re.findall(p, text_to_search))
 # To find strings of characters that are neither smaller-case letters, nor space: use caret after opening square
 # bracket to negate the set of characters searched for:
 text_to_search = "This iz a date: 21-12-03"
-p = r"[^a-z ]+"
-re.findall(p, text_to_search)
+p = r"[^a-z]+"
+print(re.findall(p, text_to_search))
 
 # To find all integers or hyphens
 text_to_search = "This is a date: 21-12-03"
@@ -252,7 +252,7 @@ text_to_search = "This is a^caret."
 p = r"^\w"
 print(re.findall(p, text_to_search))
 
-#     inside of [^...] as first character: functions as negation ([^...] matches any character not inside it)
+# inside of [^...] as first character: functions as negation ([^...] matches any character not inside it)
 text_to_search = "^This is a^caret."
 p = r"[^\w]"
 print(re.findall(p, text_to_search))
@@ -262,10 +262,10 @@ text_to_search = "^This is a^caret."
 p = r"[\w^]"
 print(re.findall(p, text_to_search))
 
-# Ambiguity of metacharacters"
+# Ambiguity of metacharacters
 # inside [], most metacharacters function as non-meta characters
 text_to_search = r"(Th)|is$ is a\lot*of+me-ta?char{}act^ers."
-p = r"[ *+?(){}.^|$]"
+p = r"[*+?(){}.^|$]"
 print(re.findall(p, text_to_search))
 
 # But \ and of course [] remain special and have to be escaped:
@@ -296,3 +296,99 @@ text_to_search = r"(Th)|i-s$ is a\lot*of+me-ta?c[h]ar{}act^ers."
 p = r"[ \*\+\?\(\)\{\}\.\^\|\$\[\]\-]"
 print(re.findall(p, text_to_search))
 
+# Grouping
+# We can also use () to group patterns
+#     We can then search for a specific pattern within the entire search pattern.
+#         use .group() method integer argument numbered from 1 to get the nth group.
+#     We can also refer back to groups within the regex
+#         use \1, \2..., etc.
+text_to_search = "apple apple apple worm apple"
+p = r"(\w+ )\1+"
+res = re.search(p, text_to_search)
+print(res.group())  # -> return entire match (same if argument 0 given)
+print(res.group(1))  # -> return value of the first group (first parentheses)
+
+# findall returns the group, not the entire match:
+text_to_search = "apple apple apple worm apple"
+p = r"(\w+ )\1+"
+print(re.findall(p, text_to_search))
+
+# if you have more than one groups (parentheses), then findall returns a list of group tuples:
+text_to_search = "Python: 1990, Java: 1995, Go: 2009"
+p = r"(\w+): (\d+)"
+print(re.findall(p, text_to_search))
+
+# You can also use named groups via (?P<name>...)
+#     refer back to group not just using \1, etc., but also via (?P=name)
+#     useful if you modify a complex search pattern, introducing and deleting groups
+
+text_to_search = """Go: 2009, Java: 1995, Java: James Gosling, Python: 1990, Python: Guido van Rossum."""
+p = r"(?P<language>\w+): (\d+)\b.*(?P=language): ([\w ]+)\b"
+print(re.findall(p, text_to_search))
+
+# Compilation flags
+# These are NOT part of the search pattern, but arguments to the re search functions modifying the way the patterns are
+# searched -> can be specified either in full-fledged names, or single-letter short versions.
+# The most widely used flags:
+# full flag 	  short flag               meaning
+# re.IGNORECASE  	 re.I 	    perform case-Insensitive matches
+# re.MULTILINE 	     re.M 	    ^ and $ match start/end of the lines, not of the entire string
+# re.VERBOSE 	     re.X 	    enable verbose regexes, for cleaner human overview
+# re.DOTALL 	     re.S 	    . matches newline characters, too
+# re.ASCII 	         re.A 	    make \w, \d, etc. match only on ASCII characters, not unicode ones
+
+# re.IGNORECASE, re.I
+text_to_search = """Go: 2009, Java: 1995, Java: James Gosling, Python: 1990, Python: Guido van Rossum."""
+p = r"python: (\d+)"
+print(re.findall(p, text_to_search))
+
+p = r"python: (\d+)"
+print(re.findall(p, text_to_search, re.I))
+
+# re.MULTILINE, re.M: beginning/end of line/string
+text_to_search = """Lor3mus
+1psum"""
+print(text_to_search)
+
+# Caret ^ matches only beginning of string by default:
+p = r"^\w"
+print(re.findall(p, text_to_search))
+
+# But caret ^ can match beginning of line with re.MULTILINE flag:
+p = r"^\w"
+re.findall(p, text_to_search, re.MULTILINE)
+
+# \A can only match beginning of string:
+p = r"\A\w"
+print(re.findall(p, text_to_search))
+
+p = r"\A\w"
+print(re.findall(p, text_to_search, re.MULTILINE))
+
+# The same holds for $ matching end of string...
+p = r"\w$"
+print(re.findall(p, text_to_search))
+
+p = r"\w$"
+print(re.findall(p, text_to_search, re.MULTILINE))
+
+# \Z can only match end of string:
+p = r"\w\Z"
+print(re.findall(p, text_to_search))
+
+# re.VERBOSE, re.X (x for Extended)
+# For complex patterns, it can help us structure and write in a more human-friendly way:
+text_to_search = """Go: 2009, Java: 1995, Java: James Gosling, Python: 1990, Python: Guido van Rossum."""
+p = r"(?P<language>\w+): (\d+)\b.*(?P=language): ([\w ]+)\b"
+print(re.findall(p, text_to_search))
+
+# With re.X, we can split it into multiple lines, adding Python-like comments using #. -> Note that we need to
+# explicitly add \s where needed (after first colon in this case), since spaces are ignored in this case!
+p = r"""(?P<language>\w+):\s    # first the named group of the programming language followed by : and whitespace
+        (\d+)\b                 # then the year = integers followed by a word boundary
+        .*                      # then any character(s)
+        (?P=language):          # again the language repeated
+        ([\w ]+)\b              # finally the developer: alphanumeric characters with space, followed by word boundary
+      """
+
+print(re.findall(p, text_to_search, re.X))
