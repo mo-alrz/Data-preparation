@@ -392,3 +392,59 @@ p = r"""(?P<language>\w+):\s    # first the named group of the programming langu
       """
 
 print(re.findall(p, text_to_search, re.X))
+
+# Advanced
+# Non-greedy *,+,?
+# We have seen that * (like other such operators) is greedy, but in some cases, this would mean that it "eats up" too
+# much of the string.
+# -> An example: the final ">" is matched, and all interim ">" are "eaten up" by ".*":
+text_to_search = "<html><head><title>Title</title>"
+p = r"<.*>"
+print(re.findall(p, text_to_search))
+
+# In such cases, we can use *?, adding a ? to make it non-greedy, so that the first time it sees a ">", and can thus
+# match the entire pattern, it will stop:
+text_to_search = "<html><head><title>Title</title>"
+p = r"<.*?>"
+print(re.findall(p, text_to_search))
+
+# Look ahead, look behind
+# Useful if we only want to match patterns followed/preceded by specific patterns (or, to the contrary, NOT
+# followed/preceded by specific patterns).
+# (?=...) = positive lookahead (?!...) = negative lookahead
+text_to_search = "Isaac Newton physicist, Isaac Asimov writer, Albert Einstein physicist"
+p = r"Isaac \w+\b(?= physicist)"  # --> Isaac something, which is followed by physicist
+print(re.findall(p, text_to_search))   # --> will only return Isaac something, but not the physicist part
+
+text_to_search = "Isaac Newton physicist, Isaac Asimov writer, Albert Einstein physicist"
+p = r"Isaac \w+\b(?! physicist)"  # --> Isaac something, which is NOT followed by physicist
+print(re.findall(p, text_to_search))   # --> will only return Isaac something, but not the lookahead part
+
+# (?<=...) = positive lookbehind (?<!...) = negative lookbehind
+text_to_search = "physicist Isaac Newton, writer Isaac Asimov, and physicist Albert Einstein"
+p = r"(?<=physicist )Isaac \w+\b"  # --> Isaac something, which is preceded by physicist
+print(re.findall(p, text_to_search))
+
+text_to_search = "physicist Isaac Newton, writer Isaac Asimov, and physicist Albert Einstein"
+p = r"(?<!physicist )Isaac \w+\b"  # --> Isaac something, which is NOT preceded by physicist
+print(re.findall(p, text_to_search))
+
+# Pre-compiled RegEx objects: re.compile()
+# Pre-compiling a regex pattern using re.compile(YOURPATTERN) resulted in better performance when doing a lot of regex
+# lookups (especially in earlier Python versions).
+# -> then the well-known functions can be called as methods on the regex object.
+text_to_search = "Hello world!"
+pattern = 'Hello'
+
+# First, compile regex object from pattern, then call method on it
+h = re.compile(pattern)
+print(h.match(text_to_search).group())
+
+# the non-precompiled way: pattern is an argument of the re function
+print(re.match(pattern, text_to_search).group())
+
+# If you precompile the pattern, then the lookup itself will be faster, since the compilation was done earlier
+# Also, you can directly specify flags in your precompiled pattern, which you don't have to remember to include in
+# future searches:
+h = re.compile(pattern,re.I)
+print(h.match(text_to_search).group())
